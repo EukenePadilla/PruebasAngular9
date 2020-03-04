@@ -1,0 +1,67 @@
+<div>
+    <h1>{{title}}</h1>
+
+    <input type="text" placeholder="what needs to be done" [(ngModel)]="tosdoTitle" (keyup.enter)="addTodo()">
+
+    <!-- en el *ngFor="let todo of tosdos", se van a mostrar todos los elementos. -->
+    <!-- en el *ngFor="let todo of tosdosFiltered()", se van a mostrar los elementos que quiera el usuario,
+    dependiendo de a que boton le haya dado, ya sea all, active o completed, filtrandolos. -->
+    <div *ngFor="let todo of tosdosFiltered()" @fade style="display:flex;border:2px solid black;width:400px; margin:10px" >
+        <div style="display:flex; margin-right:9px;margin-left:4px">
+
+            <!-- En caso de que este completado, el checkbox saldra con tick, si no, vacio-->
+            <input type="checkbox" [(ngModel)]="todo.completed" style=" height: 15px;width: 15px;">
+
+            <!-- PRIMERA MANERA-->
+            <!-- Le damos la clase completada en caso de que completado sea true.  -->
+            <!-- Nos muestra el titulo en caso de que no este en edicion.  -->
+            <!-- Si hacemos doble click, nos manda a la funcion de editTodo.   -->
+            <div style="font-size: 20px;" [ngClass]="{'completed':todo.completed}" *ngIf="!todo.editing" (dblclick)="editTodo(todo)">{{todo.title}}</div>
+            
+            <!-- Si el titulo esta en edicion nos muestra este input y aparecera el titulo gracias al ngModel. -->
+            <!-- En caso de que clickemos fuera o que pulsemos enter nos mandara a la funcion doneEdit.  -->
+            <!-- En caso de que pulsemos escape nos mandara a la funcion cancelEdit.  -->
+            <input *ngIf="todo.editing" type="text" [(ngModel)]="todo.title" style="font-size: 15px;height:50%"  (blur)="doneEdit(todo)" (keyup.enter)="doneEdit(todo)"  (keyup.esc)="cancelEdit(todo)" autofocus>    
+
+            <!-- SEGUNDA MANERA -->
+
+            <!-- <div style="font-size: 20px;" *ngIf="!todo.editing else editingTodo" (dblclick)="editTodo(todo)">{{todo.title}}</div>
+            <ng-template #editingTodo>
+                <input type="text" [(ngModel)]="todo.title" style="font-size: 15px;height:50%" (blur)="doneEdit(todo)" (keyup.enter)="doneEdit(todo)" (keyup.esc)="cancelEdit(todo)" autofocus>    
+            </ng-template> -->
+
+            
+        </div>    
+
+        <div (click)="deleteTosdo(todo.id)">DELETE</div>
+        
+    </div>
+
+    <br>
+
+    <div style="display:flex">
+        <div style="margin-right: 90px;"><label><input type="checkbox" (change)="checkAllTodos()" style=" height: 10px;width: 10px;" >Check all</label></div>
+       
+        <!-- Llamamos a la funcion remaining para que nos traiga la cantidad de elementos que no estan completados -->
+        <div>Items left : {{remaining()}}</div>
+    </div>
+
+    <br>
+
+    <div style="display:flex">
+        <!-- Cada vez que clickemos, la propiedad filter, va a cambiar a all, active o completed,
+        dependiendo cual sea, active, all o completed, ngClass mira si esa propiedad tiene el mismo nombre,
+    añadiendole la clase de active en caso de que coincidan, si no coinciden, no tendrán la clase de active-->
+        <button [ngClass]="{'active':filter ==='all'}" (click)="filter='all'">All</button>
+        <button [ngClass]="{'active':filter ==='active'}" (click)="filter='active'">Active</button>
+        <button [ngClass]="{'active':filter ==='completed'}" (click)="filter='completed'">Completed</button>
+    </div>
+   
+    <br>
+
+    <div style="display:flex">
+        <div style="margin-right: 90px;" *ngIf="atLeastOneCompleted()">
+            <button (click)="clearCompleted()">Clear Completed</button>
+        </div> 
+    </div>
+</div>
