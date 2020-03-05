@@ -1,0 +1,26 @@
+    <!-- en el *ngFor="let todo of tosdos", se van a mostrar todos los elementos. -->
+    <!-- en el *ngFor="let todo of tosdosFiltered()", se van a mostrar los elementos que quiera el usuario,
+    dependiendo de a que boton le haya dado, ya sea all, active o completed, filtrandolos. -->
+
+<div style="display:flex;border:2px solid black;width:400px; margin:10px" >
+    <div style="display:flex; margin-right:9px;margin-left:4px">
+
+        <!-- En caso de que este completado, el checkbox saldra con tick, si no, vacio-->
+        <input type="checkbox" [(ngModel)]="todo.completed" (change)="todoService.doneEdit(todo)" style=" height: 15px;width: 15px;">
+
+        <!-- PRIMERA MANERA-->
+        <!-- Le damos la clase completada en caso de que completado sea true.  -->
+        <!-- Nos muestra el titulo en caso de que no este en edicion.  -->
+        <!-- Si hacemos doble click, nos manda a la funcion de editTodo.   -->
+        <div style="font-size: 20px;" [ngClass]="{'completed':todo.completed}" *ngIf="!todo.editing" (dblclick)="todoService.editTodo(todo)">{{todo.title}}</div>
+        
+        <!-- Si el titulo esta en edicion nos muestra este input y aparecera el titulo gracias al ngModel. -->
+        <!-- En caso de que clickemos fuera o que pulsemos enter nos mandara a la funcion doneEdit.  -->
+        <!-- En caso de que pulsemos escape nos mandara a la funcion cancelEdit.  -->
+        <input *ngIf="todo.editing" type="text" [(ngModel)]="todo.title" style="font-size: 15px;height:50%"  (blur)="todoService.doneEdit(todo)" (keyup.enter)="todoService.doneEdit(todo)"  (keyup.esc)="todoService.cancelEdit(todo)" autofocus>    
+
+    </div>    
+
+    <div (click)="todoService.deleteTosdo(todo)">DELETE</div>
+    
+</div>

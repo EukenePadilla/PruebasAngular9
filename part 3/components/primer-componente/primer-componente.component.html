@@ -1,0 +1,38 @@
+<div>
+    <h1>{{todoService.title}}</h1>
+
+    <input type="text" placeholder="what needs to be done" [(ngModel)]="tosdoTitle" (keyup.enter)="addTodo()">
+    
+    <!-- Se pasa el dato todo con el nombre todo que es el que esta entre[] -->
+    <!-- Es totalmente necesario para que funcionen las funciones del padre que le mandemos por
+    (checkedItem) el doneEdit($event) que hemos creado en el typescript de todo-item-->
+    <todo-item *ngFor="let todo of todoService.tosdosFiltered()" [todo]='todo' ></todo-item>
+
+    <br>
+
+    <div style="display:flex">
+        <div style="margin-right: 90px;"><label><input type="checkbox" (change)="todoService.checkAllTodos()" style=" height: 10px;width: 10px;" >Check all</label></div>
+       
+        <!-- Llamamos a la funcion remaining para que nos traiga la cantidad de elementos que no estan completados -->
+        <div>Items left : {{todoService.remaining()}}</div>
+    </div>
+
+    <br>
+
+    <div style="display:flex">
+        <!-- Cada vez que clickemos, la propiedad filter, va a cambiar a all, active o completed,
+        dependiendo cual sea, active, all o completed, ngClass mira si esa propiedad tiene el mismo nombre,
+    añadiendole la clase de active en caso de que coincidan, si no coinciden, no tendrán la clase de active-->
+        <button [ngClass]="{'active':todoService.filter ==='all'}" (click)="todoService.filter='all'">All</button>
+        <button [ngClass]="{'active':todoService.filter ==='active'}" (click)="todoService.filter='active'">Active</button>
+        <button [ngClass]="{'active':todoService.filter ==='completed'}" (click)="todoService.filter='completed'">Completed</button>
+    </div>
+   
+    <br>
+
+    <div style="display:flex">
+        <div style="margin-right: 90px;" *ngIf="todoService.atLeastOneCompleted()">
+            <button (click)="todoService.clearCompleted()">Clear Completed</button>
+        </div> 
+    </div>
+</div>
