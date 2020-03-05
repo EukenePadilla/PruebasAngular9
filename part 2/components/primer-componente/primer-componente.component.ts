@@ -26,6 +26,8 @@ export class PrimerComponenteComponent implements OnInit {
   title:string;
   beforeEditingCache:string;
   filter:string;
+  anyRemainingModel: boolean;
+
   constructor() { }
 
   ngOnInit(){
@@ -33,6 +35,7 @@ export class PrimerComponenteComponent implements OnInit {
     this.beforeEditingCache="";
     this.title="LAUGARREN FROGA";
     this.tosdoTitle = '';
+    this.anyRemainingModel = true;
     this.idForTodo=4;
     this.tosdos =[
       {
@@ -84,35 +87,33 @@ export class PrimerComponenteComponent implements OnInit {
       esta vacio, se pondrá el nombre que ya teníamos guardado en esta variable*/
       todo.title=this.beforeEditingCache;
     }
+    this.anyRemainingModel = this.anyRemaining();
+    todo.editing = false;
+
     todo.editing=false; /* cuando ha terminado de editar y da enter o clicka en otro titulo,
     gracias al autofocus y a convertirlo en falso,desaparece el input de editar */
   }
+
   cancelEdit(todo:Todo):void{
     todo.title=this.beforeEditingCache;
     todo.editing=false; 
   }
 
-  remaining():number{
-    return this.tosdos.filter(elemento=> !elemento.completed ).length;
-     
-  }
-
-  atLeastOneCompleted():boolean{
-    return this.tosdos.filter(elemento=> elemento.completed ).length>0;/*Si hay alguno que este completado,
-    el length de tosdos basado en el filtro, será mayor a 0 por lo que devolverá un true, si no false.
-    En caso de que devuelva true, se mostrará el botón que hay en el html, con false, no saldrá en pantalla*/
-  }
-
-  clearCompleted():void{
-    this.tosdos=this.tosdos.filter(elemento=> !elemento.completed );/*Cuando clickas y te manda a esta funcion,
-    va a hacer que todos los que esten checkeados desaparezcan de tu vista, porque se queda gracias al filtro solo los 
-    elementos no completados en el array de tosdos*/
-  }
-
   checkAllTodos():void{
     this.tosdos.forEach(elemento=> elemento.completed = (<HTMLInputElement> event.target).checked);/* Aqui esta mirando
     cada elemento del array tosdos para decirle que cambie el atributo completed de cada uno de los elementos a true*/
+  
+    this.anyRemainingModel = this.anyRemaining();
+
   }
+  anyRemaining(): boolean {
+    return this.remaining() !== 0;
+  }
+
+  remaining():number{
+    return this.tosdos.filter(elemento=> !elemento.completed ).length;
+     
+  }  
 
   tosdosFiltered():Todo[]{
     if(this.filter==="all"){
@@ -126,6 +127,17 @@ export class PrimerComponenteComponent implements OnInit {
     return this.tosdos
   }
   
+  atLeastOneCompleted():boolean{
+    return this.tosdos.filter(elemento=> elemento.completed ).length>0;/*Si hay alguno que este completado,
+    el length de tosdos basado en el filtro, será mayor a 0 por lo que devolverá un true, si no false.
+    En caso de que devuelva true, se mostrará el botón que hay en el html, con false, no saldrá en pantalla*/
+  }
+
+  clearCompleted():void{
+    this.tosdos=this.tosdos.filter(elemento=> !elemento.completed );/*Cuando clickas y te manda a esta funcion,
+    va a hacer que todos los que esten checkeados desaparezcan de tu vista, porque se queda gracias al filtro solo los 
+    elementos no completados en el array de tosdos*/
+  }
 
   deleteTosdo(todo:Todo):void{
     
